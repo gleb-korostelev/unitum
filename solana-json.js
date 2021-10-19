@@ -13,13 +13,13 @@ const solanaJSON = {
 	},
 
 	createUser: async () => {
-		const user = new solanaWeb3.Account();
+		const user = new solanaWeb3.Keypair();
 		console.log(`New solana account created: ${user.publicKey}`);
 		return user;
 	},
 
 	loadUser: async (privateKeyBufferArray) => {
-		const user = new solanaWeb3.Account(privateKeyBufferArray);
+		const user = new solanaWeb3.Keypair(privateKeyBufferArray);
 		console.log(`Loaded solana account: ${user.publicKey}`);
 		return user;
 	},
@@ -45,7 +45,9 @@ const solanaJSON = {
 		// Load the program
 		console.log('Loading program...');
 		const data = await fs.readFile(smartContract.pathToProgram);
-		const programAccount = new solanaWeb3.Account();
+		console.log({data})
+		const programAccount = new solanaWeb3.Keypair();
+		console.log({programAccount})
 		await solanaWeb3.BpfLoader.load(
 			connection,
 			payerAccount,
@@ -53,11 +55,13 @@ const solanaJSON = {
 			data,
 			solanaWeb3.BPF_LOADER_PROGRAM_ID,
 		);
+		console.log('Program loaded to account')
 		const programId = programAccount.publicKey;
 		console.log('Program loaded to account', programId.toBase58());
 
+
 		// Create the app account
-		const appAccount = new solanaWeb3.Account();
+		const appAccount = new solanaWeb3.Keypair();
 		const appPubkey = appAccount.publicKey;
 		console.log('Creating app account', appPubkey.toBase58());
 		const space = smartContract.dataLayout.span;
